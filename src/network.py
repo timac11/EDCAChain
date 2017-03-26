@@ -4,7 +4,7 @@
 """
 import numpy as numPy
 import scipy as sciPy
-
+from threading import Thread
 class Network:
     def __init__(self, stations, state):
         self.stations = stations
@@ -29,3 +29,12 @@ class Network:
     def changeStateOfEachStation (self):
         for station in self.stations:
             station.changeState()
+    def stationManagement(self):
+
+        return 0
+    def startSimulation(self):
+        t1 = Thread(target=self.stationManagement, args=())
+        t2 = Thread(target=self.stationManagement, args=())
+        t1.start()
+        t2.stert()
+        #return 0

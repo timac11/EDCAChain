@@ -36,6 +36,8 @@ class Station:
         #while backoff counter is hardcoded by 100 * backoff
         self.backoffCounter = 100 * self.backoff
         self.state = 'init'
+    def setQueue (self, queue):
+        self.queue = queue
     def getNextPacket (self):
         #get the first
         helpList = self.queue
