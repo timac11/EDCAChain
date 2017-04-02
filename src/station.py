@@ -26,21 +26,14 @@ states = ["transmit", "mis", "sleep", "init"]
 
 
 class Station:
-    # SIFS = 1
-    # DIFS = 2
     def __init__(self, stationNumber, Difs, Sifs, queue):
         self.Difs = Difs
         self.Sifs = Sifs
         self.queue = queue
-        self.backoff = 1
-        # while backoff counter is hardcoded by 100 * backoff
-        self.backoffCounter = 100 * self.backoff
-        self.state = 'init'
-        #self.network = network
+        self.stationNumber = stationNumber
 
     def get_first_output_event(self):
         this_ev = self.queue.pop()
-        print(this_ev)
         return this_ev
 
     def set_queue(self, queue):
@@ -57,29 +50,6 @@ class Station:
             return True
         else:
             return False
-
-    def try_send_packet(self):
-        # implement this function
-        return 0
-
-    def resolve_backoff(self):
-        # implement this function
-        return 0
-
-    def resolve_transmition(self):
-        #implement this function
-        return 0
-
-    def change_state(self):
-        #TODO with CASE construction and delete if else
-        if self.state == 'sleep':
-            return
-        if self.state == 'init':
-            self.trySendPacket()
-        if self.state == 'mis':
-            self.resolveBackoff()
-        if self.state == 'transmit':
-            self.resolveTransmition()
 
     def push_to_network_queue(self, event):
         self.network.push_to_queue(event)

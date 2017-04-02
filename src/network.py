@@ -17,10 +17,6 @@ class Network:
         # transmitted packets in the network
         self.transmitted_packets = []
 
-        # True state is empty in begining
-        # self.state = True
-        # self.fromStation = -1
-        # self.toStation = -1
         # base queue events for all stations in network
         # may be will be emplemented as new base class
         # queue is event list
@@ -47,13 +43,11 @@ class Network:
         for station in self.stations:
             # first_output_event is function simulating buffer with the size is 1
             self.queue_events.append(station.get_first_output_event())
-        print(self.queue_events)
 
     def get_priority_event_from_queue(self):
         self.sort_queue()
         # returns event for packet transmission
         self.event = self.queue_events.pop()
-        print(self.event)
         self.event.packet.state = 'transmit'
         return self.event
 
@@ -66,8 +60,8 @@ class Network:
             self.get_priority_event_from_queue()
         if self.event.packet.backoff_counter == 0:
             self.event.packet.transmit_frame_of_packet(part_size=1)
-            print("station", self.event.packet.fromStation,
-                  "transmits to", self.event.packet.toStation,
+            print("station", self.event.packet.from_station,
+                  "transmits to", self.event.packet.to_station,
                   self.event.packet.transmitted_size, "frames of",
                   self.event.packet.size, "size")
             if self.event.packet.size == self.event.packet.transmitted_size:
@@ -76,7 +70,7 @@ class Network:
                 self.event = None
         else:
             self.event.packet.backoff_counter -= 1
-            print("packet from station", self.event.packet.fromStation, "backoff counter =", self.event.packet.backoff_counter)
+            print("packet from station", self.event.packet.from_station, "backoff counter =", self.event.packet.backoff_counter)
             # decrease or increase backoff time of each station
         self.change_state_of_each_event()
 
@@ -95,16 +89,16 @@ class Network:
     def set_state(self, state):
         self.state = state
 
-    def set_from_station(self, fromStation):
-        self.fromStation = fromStation
+    def set_from_station(self, from_station):
+        self.from_station = from_station
 
     def get_from_station(self):
-        return self.fromStation
+        return self.from_station
 
-    def set_to_station(self, toStation):
-        self.toStation = toStation
+    def set_to_station(self, to_station):
+        self.to_station = to_station
 
     def get_to_station(self):
-        return self.toStation
+        return self.to_station
 
     #########################################

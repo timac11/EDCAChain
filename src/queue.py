@@ -8,7 +8,9 @@ This class is created for
 
         }
 """
-class queue:
+
+
+class Queue:
     def __init__(self, number, queue):
         self.number = number
         self.queue = queue

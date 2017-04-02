@@ -18,7 +18,7 @@ This class is created for
 import random
 
 class Packet:
-    def __init__(self, size, fromStation, toStation):
+    def __init__(self, size, from_station, to_station):
         # there are states:
         # 'missing' and 'transmit'
         # during 'missing' state packet works with backoff
@@ -26,8 +26,8 @@ class Packet:
         # by default state is missing
 
         self.size = size
-        self.fromStation = fromStation
-        self.toStation = toStation
+        self.from_station = from_station
+        self.to_station = to_station
         self.transmitted = False
         self.transmitted_size = 0
         self.state = 'missing'
@@ -75,7 +75,7 @@ class Packet:
         else:
             if self.backoff_counter > 0:
                 self.backoff_counter -= 1
-        print("packet from station", self.fromStation, "backoff counter =", self.backoff_counter)
+        print("packet from station", self.from_station, "backoff counter =", self.backoff_counter)
 
     def set_time(self, time):
         self.time += time

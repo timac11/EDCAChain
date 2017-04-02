@@ -24,7 +24,6 @@ def main():
     station_third = station(3, Sifs=1, Difs=2, queue=[event(packet(10, 3, 1))])
 
     # append method of stations into network
-    #
 
     this_stations.append(station_first)
     this_stations.append(station_second)
