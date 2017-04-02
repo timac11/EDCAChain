@@ -22,7 +22,6 @@
             }
         }
 """
-states = ["transmit", "mis", "sleep", "init"]
 
 
 class Station:
@@ -33,8 +32,11 @@ class Station:
         self.stationNumber = stationNumber
 
     def get_first_output_event(self):
-        this_ev = self.queue.pop()
-        return this_ev
+        if not self.queue_is_empty():
+            this_ev = self.queue.pop()
+            return this_ev
+        else:
+            return None
 
     def set_queue(self, queue):
         self.queue = queue

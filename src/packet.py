@@ -17,6 +17,7 @@ This class is created for
 """
 import random
 
+
 class Packet:
     def __init__(self, size, from_station, to_station):
         # there are states:
@@ -62,7 +63,7 @@ class Packet:
         # todo random backoff
         # while hardcoded with 10
 
-        self.backoff = random.randint(1, 10)
+        self.backoff = random.randint(1, 30)
         self.backoff_counter = random.randint(1, self.backoff)
         self.set_time(self.backoff_counter)
 

@@ -26,6 +26,7 @@ class Network:
         # event in the begining is not determind
 
         self.event = None
+        self.current_station = None
 
     def queue_is_empty(self):
         return len(self.queue_events) == 0
@@ -49,6 +50,7 @@ class Network:
         # returns event for packet transmission
         self.event = self.queue_events.pop()
         self.event.packet.state = 'transmit'
+        self.set_current_station()
         return self.event
 
     def execute_event(self):
@@ -58,6 +60,8 @@ class Network:
 
         if self.event is None:
             self.get_priority_event_from_queue()
+            #if  self.event.packet is not None:
+            #self.set_current_station()
         if self.event.packet.backoff_counter == 0:
             self.event.packet.transmit_frame_of_packet(part_size=1)
             # Freeze all backoff of packets in packet queue
@@ -69,8 +73,13 @@ class Network:
             if self.event.packet.size == self.event.packet.transmitted_size:
                 print("transmitted completed",
                       "packet information:", self.event.packet)
+                # update queue, event and queue into the transmitted station
                 self.event = None
                 self.unfreeze_all_backoffs()
+                next_station_event = self.current_station.get_first_output_event()
+                if next_station_event is not None:
+                    self.queue_events.append(next_station_event)
+                    self.sort_queue()
         else:
             self.event.packet.backoff_counter -= 1
             print("packet from station", self.event.packet.from_station, "backoff counter =", self.event.packet.backoff_counter)
@@ -88,6 +97,17 @@ class Network:
     def unfreeze_all_backoffs(self):
         for event in self.queue_events:
             event.packet.state = 'missing'
+
+    def set_current_station(self):
+        self.current_station = self.get_station_by_id(self.event.packet.from_station)
+
+    def get_station_by_id(self, station_id):
+        for station in self.stations:
+            #print(station_id, station.stationNumber)
+            if station_id == station.stationNumber:
+                this_station = station
+                break
+        return this_station
 
     ##################################################################
 
