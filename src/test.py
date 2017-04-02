@@ -106,3 +106,86 @@ class Buffer:
         self.list.append(a)
     def get_current_part(self):
         return self.list
+
+# import datetime
+# list = input().split()
+# year = list[0]
+# month = list[1]
+# day = list[2]
+# data = datetime.date(int(year), int(month), int(day))
+# days = datetime.timedelta(days=int(input()))
+# newDate = data + days
+# print(newDate.year,newDate.month,newDate.day)
+
+#import simplecrypt
+#############################################################################################
+# class multifilter:
+#
+#     def judge_half(pos, neg):
+#         # допускает элемент, если его допускает хотя бы половина фукнций (pos >= neg)
+#         return pos >= neg
+#     def judge_any(pos, neg):
+#         # допускает элемент, если его допускает хотя бы одна функция (pos >= 1)
+#         return pos >= 1
+#     def judge_all(pos, neg):
+#         return neg == 0
+#         # допускает элемент, если его допускают все функции (neg == 0)
+#
+#     def __init__(self, iterable, *funcs, judge=judge_any):
+#         self.pos = 0
+#         self.neg = 0
+#         self.newPosled = []
+#         for iterator in iterable:
+#             self.pos = 0
+#             self.neg = 0
+#             for func in funcs:
+#                 if func(iterator):
+#                     self.pos = self.pos + 1
+#                 else:
+#                     self.neg = self.neg + 1
+#             #if pos > neg:
+#             #    self.newPosled.append(iterator)
+#             #else:
+#             if judge(self.pos, self.neg):
+#                 self.newPosled.append(iterator)
+#
+#
+#         # iterable - исходная последовательность
+#         # funcs - допускающие функции
+#         # judge - решающая функция
+#
+#     def __iter__(self):
+#         return iter(self.newPosled)
+##################################################################################################
+
+# def primes():
+#     def isSimple(n):
+#         d = n - 1
+#         while d > 1:
+#             if n % d == 0:
+#                 return False
+#             d -= 1
+#         return True
+#     for i in range(1, 10000):
+#         if isSimple(i):
+#             yield i
+#####################################################################################################
+# f1 = open("file.txt",'r')
+# f2 = open("filecopy.txt", 'w')
+# line = []
+# for i in f1:
+#     line.append(i)
+# for i in range(len(line)):
+#     f2.write(line.pop())
+# f1.close()
+# f2.close()
+######################################################################################################
+def mod_checker(x, mod=0):
+    return lambda y: y % x == mod
+
+a[lower : : upper] = []
+a[lower + offset:upper + offset] = []
+a[lower:upper], a[lower:upper:], a[lower::step] = []
+a[lower + offset : upper + offset] = []
+a[lower+offset : upper+offset] = []
+
