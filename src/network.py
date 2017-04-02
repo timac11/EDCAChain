@@ -7,7 +7,8 @@
 # Helpful function for sorting queue by time
 
 def sort_by_time(event):
-    return event.packet.time
+    return -1*event.packet.time
+
 
 class Network:
     def __init__(self, stations):
@@ -63,18 +64,20 @@ class Network:
 
         if self.event is None:
             self.get_priority_event_from_queue()
-
-        self.event.packet.transmit_frame_of_packet(part_size=1)
-        print("station", self.event.packet.fromStation,
-              "transmits to", self.event.packet.toStation,
-              self.event.packet.transmitted_size, "frames of",
-              self.event.packet.size, "size")
-        if self.event.packet.size == self.event.packet.transmitted_size:
-            print("transmitted completed",
-                  "packet information:", self.event.packet)
-            self.event = None
-        # decrease or increase backoff time of each station
-
+        if self.event.packet.backoff_counter == 0:
+            self.event.packet.transmit_frame_of_packet(part_size=1)
+            print("station", self.event.packet.fromStation,
+                  "transmits to", self.event.packet.toStation,
+                  self.event.packet.transmitted_size, "frames of",
+                  self.event.packet.size, "size")
+            if self.event.packet.size == self.event.packet.transmitted_size:
+                print("transmitted completed",
+                      "packet information:", self.event.packet)
+                self.event = None
+        else:
+            self.event.packet.backoff_counter -= 1
+            print("packet from station", self.event.packet.fromStation, "backoff counter =", self.event.packet.backoff_counter)
+            # decrease or increase backoff time of each station
         self.change_state_of_each_event()
 
     def change_state_of_each_event(self):
@@ -105,9 +108,3 @@ class Network:
         return self.toStation
 
     #########################################
-
-    def station_management(self):
-        return 0
-
-    def start_simulation(self):
-        return 0
