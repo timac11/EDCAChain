@@ -38,8 +38,6 @@ def main():
 
     start_simulation(this_network)
 
-
-
 """""
      as for this implementation:
      in this model event = transmition of one data frame in the channel

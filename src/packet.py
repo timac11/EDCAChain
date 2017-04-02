@@ -15,7 +15,7 @@ This class is created for
 
         }
 """
-
+import random
 
 class Packet:
     def __init__(self, size, fromStation, toStation):
@@ -36,8 +36,21 @@ class Packet:
         # in the begining backoff and
         # backoff counter are 0
 
-        self.backoff_counter = 0
-        self.backoff = 0
+        # time - is packet parameter
+        # by that queue consisting of packets is sorted
+        # int
+
+        self.time = 0
+
+        # Also every packet has priority in the station
+        # While hardcoded without priority
+
+        self.priority = 0
+
+        #self.backoff_counter = 0
+        #self.backoff = 0
+
+        self.choose_backoff()
 
     def transmit_frame_of_packet(self, part_size):
         self.transmitted_size = self.transmitted_size + part_size
@@ -49,7 +62,9 @@ class Packet:
         # todo random backoff
         # while hardcoded with 10
 
-        self.backoff = 10
+        self.backoff = random.randint(1, 10)
+        self.backoff_counter = random.randint(1, self.backoff)
+        self.set_time(self.backoff_counter)
 
     def change_state(self):
         if self.state == 'missing':
@@ -57,3 +72,10 @@ class Packet:
                 self.choose_backoff()
             else:
                 self.backoff_counter -= 1
+        print("packet from station", self.fromStation, "backoff counter =", self.backoff_counter)
+
+    def set_time(self, time):
+        self.time += time
+
+    def get_time(self):
+        return self.time

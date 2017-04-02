@@ -4,6 +4,11 @@
 """
 
 
+# Helpful function for sorting queue by time
+
+def sort_by_time(event):
+    return event.packet.time
+
 class Network:
     def __init__(self, stations):
         self.stations = stations
@@ -32,10 +37,10 @@ class Network:
         self.queue_events.append(event)
 
     def sort_queue(self):
-        self.queue_events.sort(key=self.sort_by_time)
+        self.queue_events.sort(key=sort_by_time)
 
-    def sort_by_time(event):
-        return event.time
+    # In this function set up state of each packet
+    # in each station
 
     def initialize_queue(self):
         for station in self.stations:
@@ -44,7 +49,7 @@ class Network:
         print(self.queue_events)
 
     def get_priority_event_from_queue(self):
-
+        self.sort_queue()
         # returns event for packet transmission
         self.event = self.queue_events.pop()
         print(self.event)
