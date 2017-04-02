@@ -60,6 +60,8 @@ class Network:
             self.get_priority_event_from_queue()
         if self.event.packet.backoff_counter == 0:
             self.event.packet.transmit_frame_of_packet(part_size=1)
+            # Freeze all backoff of packets in packet queue
+            self.freeze_all_backoffs()
             print("station", self.event.packet.from_station,
                   "transmits to", self.event.packet.to_station,
                   self.event.packet.transmitted_size, "frames of",
@@ -68,6 +70,7 @@ class Network:
                 print("transmitted completed",
                       "packet information:", self.event.packet)
                 self.event = None
+                self.unfreeze_all_backoffs()
         else:
             self.event.packet.backoff_counter -= 1
             print("packet from station", self.event.packet.from_station, "backoff counter =", self.event.packet.backoff_counter)
@@ -77,6 +80,14 @@ class Network:
     def change_state_of_each_event(self):
         for event in self.queue_events:
             event.packet.change_state()
+
+    def freeze_all_backoffs(self):
+        for event in self.queue_events:
+            event.packet.state = 'sleep'
+
+    def unfreeze_all_backoffs(self):
+        for event in self.queue_events:
+            event.packet.state = 'missing'
 
     ##################################################################
 

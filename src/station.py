@@ -51,5 +51,3 @@ class Station:
         else:
             return False
 
-    def push_to_network_queue(self, event):
-        self.network.push_to_queue(event)

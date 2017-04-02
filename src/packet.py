@@ -73,8 +73,9 @@ class Packet:
             else:
                 self.backoff_counter -= 1
         else:
-            if self.backoff_counter > 0:
-                self.backoff_counter -= 1
+            if self.state == 'transmit':
+                if self.backoff_counter > 0:
+                    self.backoff_counter -= 1
         print("packet from station", self.from_station, "backoff counter =", self.backoff_counter)
 
     def set_time(self, time):
