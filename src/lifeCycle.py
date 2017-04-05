@@ -2,6 +2,7 @@ from event import Event as event
 from network import Network as network
 from packet import Packet as packet
 from station import Station as station
+import ConfigurationParser as parser
 
 
 def main():
@@ -19,16 +20,16 @@ def main():
     # all packets by the same size is equal to 10
     # todo: implement xml configuration file and xml parser
 
-    station_first = station(stationNumber=1, Sifs=1, Difs=2, queue=[event(packet(10, 1, 2)), event(packet(10, 1, 3))])
-    station_second = station(stationNumber=2, Sifs=1, Difs=2, queue=[event(packet(10, 2, 3))])
-    station_third = station(stationNumber=3, Sifs=1, Difs=2, queue=[event(packet(10, 3, 1))])
-
-    # append method of stations into network
-
-    this_stations.append(station_first)
-    this_stations.append(station_second)
-    this_stations.append(station_third)
-
+    # station_first = station(stationNumber=1, Sifs=1, Difs=2, queue=[event(packet(10, 1, 2)), event(packet(10, 1, 3))])
+    # station_second = station(stationNumber=2, Sifs=1, Difs=2, queue=[event(packet(10, 2, 3))])
+    # station_third = station(stationNumber=3, Sifs=1, Difs=2, queue=[event(packet(10, 3, 1))])
+    #
+    # # append method of stations into network
+    #
+    # this_stations.append(station_first)
+    # this_stations.append(station_second)
+    # this_stations.append(station_third)
+    this_stations = parser.xml_parsing()
     # while implemented queue in network is empty in default
 
     this_network = network(stations=this_stations)
