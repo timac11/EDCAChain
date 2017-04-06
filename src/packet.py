@@ -20,11 +20,6 @@ import random
 
 class Packet:
     def __init__(self, size, from_station, to_station):
-        # there are states:
-        # 'missing' and 'transmit'
-        # during 'missing' state packet works with backoff
-        # timer and state
-        # by default state is missing
 
         self.size = size
         self.from_station = from_station

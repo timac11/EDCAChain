@@ -1,42 +1,16 @@
-from event import Event as event
 from network import Network as network
-from packet import Packet as packet
-from station import Station as station
 import ConfigurationParser as parser
 
 
 def main():
-    # this_network = network()
 
-    # here should be some xml parser for input data
-    # while it is initialized by some hardcoded massive
-
-    this_stations = []
-
-    # input and creation of 3 stations :
-    # while implemented easy scenario
-    # the first station has one packet to second
-    # the second to the third and the third to the first
-    # all packets by the same size is equal to 10
-    # todo: implement xml configuration file and xml parser
-
-    # station_first = station(stationNumber=1, Sifs=1, Difs=2, queue=[event(packet(10, 1, 2)), event(packet(10, 1, 3))])
-    # station_second = station(stationNumber=2, Sifs=1, Difs=2, queue=[event(packet(10, 2, 3))])
-    # station_third = station(stationNumber=3, Sifs=1, Difs=2, queue=[event(packet(10, 3, 1))])
-    #
-    # # append method of stations into network
-    #
-    # this_stations.append(station_first)
-    # this_stations.append(station_second)
-    # this_stations.append(station_third)
     this_stations = parser.xml_parsing()
-    # while implemented queue in network is empty in default
 
+    # creation of network with parameters of stations
     this_network = network(stations=this_stations)
 
     # after implementing all parameters let's start simulation
-
-    start_simulation(this_network)
+    simulation(this_network)
 
 """""
      as for this implementation:
@@ -45,24 +19,108 @@ def main():
 """""
 
 
+def sort_by_time(event):
+    return -1*event.packet.time
+
+
+def initialize_queue(this_network, queue_events):
+    for station in this_network.stations:
+        # first_output_event is function simulating buffer with the size is 1
+        queue_events.append(station.get_first_output_event())
+
+
+def get_priority_event_from_queue(this_network, queue_events):
+    sort_queue(queue_events)
+    # returns event for packet transmission
+    event = queue_events.pop()
+    event.packet.state = 'transmit'
+    this_network.set_current_station(event)
+    return event
+
+
+def queue_is_empty(queue_events):
+    return len(queue_events) == 0
+
+
+def push_to_queue(queue_events, event):
+    queue_events.append(event)
+
+
+def sort_queue(queue_events):
+    queue_events.sort(key=sort_by_time)
+
+
+def change_state_of_each_event(queue_events):
+    for event in queue_events:
+        event.packet.change_state()
+
+
+def freeze_all_backoffs(queue_events):
+    for event in queue_events:
+        event.packet.state = 'sleep'
+
+
+def unfreeze_all_backoffs(queue_events):
+    for event in queue_events:
+        event.packet.state = 'missing'
+
+
+def simulation(this_network):
+
+    queue_events = []
+    event = None
+
+    # init event queue
+    initialize_queue(this_network, queue_events)
+
+    # get priority event from event queue
+    event = get_priority_event_from_queue(this_network, queue_events)
+
+    while not queue_is_empty(queue_events) or event is not None:
+
+        if event is None:
+            event = get_priority_event_from_queue(this_network, queue_events)
+
+        if event.packet.backoff_counter == 0:
+            event.packet.transmit_frame_of_packet(part_size=1)
+            # Freeze all backoff of packets in packet queue
+            freeze_all_backoffs(queue_events)
+            print("station", event.packet.from_station,
+                  "transmits to", event.packet.to_station,
+                  event.packet.transmitted_size, "frames of",
+                  event.packet.size, "size")
+            if event.packet.size == event.packet.transmitted_size:
+                print("transmitted completed",
+                      "packet information:", event.packet)
+                # update queue, event and queue into the transmitted station
+                event = None
+                unfreeze_all_backoffs(queue_events)
+                next_station_event = this_network.current_station.get_first_output_event()
+                if next_station_event is not None:
+                    queue_events.append(next_station_event)
+                    sort_queue(queue_events)
+        else:
+            event.packet.backoff_counter -= 1
+            print("packet from station", event.packet.from_station, "backoff counter =",
+                  event.packet.backoff_counter)
+            # decrease or increase backoff time of each station
+        change_state_of_each_event(queue_events)
+
+
 def start_simulation(this_network):
+
     # while logs will be written into console
     # todo logs into log file
 
-    this_network.initialize_queue()
 
-    # takes the first event from the queue
+    # simulation work of the network
+    simulation(this_network)
 
-    this_network.get_priority_event_from_queue()
-
-    while not this_network.queue_is_empty() or not this_network.event is None:
-        this_network.execute_event()
     end_simulation()
 
 
 def end_simulation():
     print("simulation is completed")
 
-
-# start implement stations and others objects for creation network
+# start init and after that simulation
 main()

@@ -38,15 +38,6 @@ class Station:
         else:
             return None
 
-    def set_queue(self, queue):
-        self.queue = queue
-
-    def get_next_packet(self):
-        # get the first
-        helpList = self.queue
-        helpList.revert()
-        self.currentPacket = helpList.pop()
-
     def queue_is_empty(self):
         if len(self.queue) == 0:
             return True
