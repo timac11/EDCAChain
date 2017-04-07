@@ -107,20 +107,7 @@ def simulation(this_network):
         change_state_of_each_event(queue_events)
 
 
-def start_simulation(this_network):
-
-    # while logs will be written into console
-    # todo logs into log file
-
-
-    # simulation work of the network
-    simulation(this_network)
-
-    end_simulation()
-
-
 def end_simulation():
     print("simulation is completed")
 
-# start init and after that simulation
 main()
