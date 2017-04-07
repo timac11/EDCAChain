@@ -25,11 +25,11 @@
 
 
 class Station:
-    def __init__(self, stationNumber, Difs, Sifs, queue):
-        self.Difs = Difs
-        self.Sifs = Sifs
+    def __init__(self, station_number, difs, sifs, queue):
+        self.difs = difs
+        self.sifs = sifs
         self.queue = queue
-        self.stationNumber = stationNumber
+        self.station_number = station_number
 
     def get_first_output_event(self):
         if not self.queue_is_empty():

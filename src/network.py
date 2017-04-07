@@ -25,7 +25,7 @@ class Network:
         # There is not situations with invalid station id
         this_station = None
         for station in self.stations:
-            if station_id == station.stationNumber:
+            if station_id == station.station_number:
                 this_station = station
                 break
         return this_station
