@@ -52,7 +52,6 @@ def get_priority_transmit_events_from_queue(this_network, queue_events):
         pass
     for event in events:
         event.packet.state = 'transmit'
-    this_network.set_current_station(events[0])
     collision_flag = False
     if len(events) > 1:
         collision_flag = True

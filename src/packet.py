@@ -21,32 +21,37 @@ import random
 class Packet:
     def __init__(self, size, from_station, to_station):
 
-        self.size = size
-        self.from_station = from_station
-        self.to_station = to_station
+        self.__size = size
+        self.__time = 0
+
+        self.__from_station = from_station
+        self.__to_station = to_station
+
         self.transmitted = False
         self.transmitted_size = 0
         self.state = 'missing'
-        self.missing_time = 0
-
-        # in the begining backoff and
-        # backoff counter are 0
-
-        # time - is packet parameter
-        # by that queue consisting of packets is sorted
-        # int
-
-        self.time = 0
-
-        # Also every packet has priority in the station
-        # While hardcoded without priority
-
-        self.priority = 0
-
-        #self.backoff_counter = 0
-        #self.backoff = 0
 
         self.choose_backoff()
+
+    @property
+    def size(self):
+        return self.__size
+
+    @property
+    def from_station(self):
+        return self.__from_station
+
+    @property
+    def to_station(self):
+        return self.__to_station
+
+    @property
+    def time(self):
+        return self.__time
+
+    @time.setter
+    def time(self, time):
+        self.__time = time
 
     def transmit_frame_of_packet(self, part_size):
         self.transmitted_size = self.transmitted_size + part_size
@@ -55,17 +60,10 @@ class Packet:
         self.transmitted = True
 
     def choose_backoff(self):
-        # todo random backoff
-        # while hardcoded with 10
+        # todo random backoff to delete and implement present
         self.backoff = random.randint(1, 30)
-
-        # commented after debug
-        # if self.from_station == 1 or self.from_station == 2:
-        #    self.backoff_counter = 1
-        #else:
-
         self.backoff_counter = random.randint(1, self.backoff)
-        self.set_time(self.backoff_counter)
+        self.__time = self.backoff_counter
 
     def change_state(self):
         if self.state == 'missing':
@@ -78,9 +76,3 @@ class Packet:
                 if self.backoff_counter > 0:
                     self.backoff_counter -= 1
         print("packet from station", self.from_station, "backoff counter =", self.backoff_counter)
-
-    def set_time(self, time):
-        self.time += time
-
-    def get_time(self):
-        return self.time
