@@ -53,9 +53,6 @@ def get_priority_transmit_events_from_queue(this_network, queue_events):
     for event in events:
         event.packet.state = 'transmit'
     this_network.set_current_station(events[0])
-    for event in events:
-        print(event.packet.from_station, event.packet.to_station)
-        print(len(events))
     collision_flag = False
     if len(events) > 1:
         collision_flag = True
@@ -89,8 +86,29 @@ def unfreeze_all_backoffs(queue_events):
         event.packet.state = 'missing'
 
 
-def collision_avoidance(queue_events):
-    return False
+def collision_avoidance(event):
+    print("collision is detected. failed to transmit packet")
+    event.packet.state = 'missing'
+    event.packet.transmitted_size = 0
+
+
+def transmit_frame(event):
+    event.packet.transmit_frame_of_packet(part_size=1)
+    print("station", event.packet.from_station,
+          "transmits to", event.packet.to_station, 'station',
+          event.packet.transmitted_size, "frames of",
+          event.packet.size, "size")
+
+
+def generate_new_event(queue_events, this_network, event):
+    print("transmitted completed",
+          "packet information:", event.packet)
+    # update queue, event and queue into the transmitted station
+    current_station = this_network.get_station_by_id(event.packet.from_station)
+    next_station_event = current_station.get_first_output_event()
+    if next_station_event is not None:
+        queue_events.append(next_station_event)
+        sort_queue(queue_events)
 
 
 def simulation(this_network):
@@ -100,12 +118,7 @@ def simulation(this_network):
 
     # implementation of the list of events
     transmit_events = []
-
-    #  init event queue
     initialize_queue(this_network, queue_events)
-
-    # get priority event from event queue
-    # event = get_priority_event_from_queue(this_network, queue_events)
 
     # collision flag : @param : boolean
     collision_flag = False
@@ -116,31 +129,15 @@ def simulation(this_network):
 
         for event in transmit_events:
             if event.packet.backoff_counter == 0:
-                event.packet.transmit_frame_of_packet(part_size=1)
-                print("station", event.packet.from_station,
-                      "transmits to", event.packet.to_station, 'station',
-                      event.packet.transmitted_size, "frames of",
-                      event.packet.size, "size")
-                # Freeze all backoff of packets in packet queue
+                transmit_frame(event)
                 freeze_all_backoffs(queue_events)
-                print(collision_flag)
-                print(transmit_events)
                 if event.packet.size == event.packet.transmitted_size:
                     if collision_flag:
-                        print("collision is detected. failed to transmit packet")
-                        event.packet.state = 'missing'
-                        event.packet.transmitted_size = 0
+                        collision_avoidance(event)
                         queue_events.append(event)
                         sort_queue(queue_events)
                     else:
-                        print("transmitted completed",
-                              "packet information:", event.packet)
-                        # update queue, event and queue into the transmitted station
-                        current_station = this_network.get_station_by_id(event.packet.from_station)
-                        next_station_event = current_station.get_first_output_event()
-                        if next_station_event is not None:
-                            queue_events.append(next_station_event)
-                            sort_queue(queue_events)
+                        generate_new_event(queue_events, this_network, event)
                     transmit_events.remove(event)
                     if len(transmit_events) == 0:
                         unfreeze_all_backoffs(queue_events)

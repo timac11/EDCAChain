@@ -58,10 +58,13 @@ class Packet:
         # todo random backoff
         # while hardcoded with 10
         self.backoff = random.randint(1, 30)
-        if self.from_station == 1 or self.from_station == 2:
-            self.backoff_counter = 1
-        else:
-            self.backoff_counter = random.randint(1, self.backoff)
+
+        # commented after debug
+        # if self.from_station == 1 or self.from_station == 2:
+        #    self.backoff_counter = 1
+        #else:
+
+        self.backoff_counter = random.randint(1, self.backoff)
         self.set_time(self.backoff_counter)
 
     def change_state(self):
