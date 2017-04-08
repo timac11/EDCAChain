@@ -43,11 +43,12 @@ def get_priority_transmit_events_from_queue(this_network, queue_events):
     sort_queue(queue_events)
     # returns event for packet transmission
     events = list()
-    events.append(queue_events.pop())
     try:
-        while events[0].packet.backoff_counter == queue_events[0].packet.backoff_counter and len(queue_events) > 0:
+        events.append(queue_events.pop())
+        while events[-1].packet.backoff_counter == queue_events[-1].packet.backoff_counter and len(queue_events) > 0:
             events.append(queue_events.pop())
     except IndexError:
+        # todo implement error detection
         pass
     for event in events:
         event.packet.state = 'transmit'
@@ -101,12 +102,12 @@ def simulation(this_network):
     initialize_queue(this_network, queue_events)
 
     # get priority event from event queue
-    event = get_priority_event_from_queue(this_network, queue_events)
+    # event = get_priority_event_from_queue(this_network, queue_events)
 
     # collision flag : @param : boolean
     collision_flag = False
 
-    while not queue_is_empty(queue_events) or queue_is_empty(transmit_events):
+    while not queue_is_empty(queue_events) or not queue_is_empty(transmit_events):
 
         if len(transmit_events) == 0:
             transmit_events = get_priority_transmit_events_from_queue(this_network, queue_events)
