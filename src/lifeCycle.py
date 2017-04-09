@@ -1,9 +1,8 @@
-from network import Network as network
 import ConfigurationParser as parser
+from network import Network as network
 
 
 def main():
-
     this_stations = parser.xml_parsing()
 
     # creation of network with parameters of stations
@@ -21,7 +20,7 @@ def main():
 
 
 def sort_by_time(event):
-    return -1*event.packet.time
+    return -1 * event.packet.time
 
 
 def initialize_queue(this_network, queue_events):
@@ -86,7 +85,7 @@ def unfreeze_all_backoffs(queue_events):
 
 
 def collision_avoidance(event):
-    print("collision is detected. failed to transmit packet")
+    print("collision is detected. failed to transmit packet, ack is not sent")
     event.packet.state = 'missing'
     event.packet.transmitted_size = 0
 
@@ -110,6 +109,10 @@ def generate_new_event(queue_events, this_network, event):
         sort_queue(queue_events)
 
 
+def send_ack(event):
+    event.packet.ack = True
+
+
 def simulation(this_network):
     print('begining of simulation')
     queue_events = []
@@ -131,7 +134,9 @@ def simulation(this_network):
                 transmit_frame(event)
                 freeze_all_backoffs(queue_events)
                 if event.packet.size == event.packet.transmitted_size:
-                    if collision_flag:
+                    if not collision_flag:
+                        send_ack(event)
+                    if not event.packet.ack:
                         collision_avoidance(event)
                         queue_events.append(event)
                         sort_queue(queue_events)
@@ -144,12 +149,13 @@ def simulation(this_network):
                 event.packet.backoff_counter -= 1
                 print("packet from station", event.packet.from_station, "backoff counter =",
                       event.packet.backoff_counter)
-            # decrease or increase backoff time of each station
+                # decrease or increase backoff time of each station
         change_state_of_each_event(queue_events)
-        #collision_avoidance(queue_events)
+        # collision_avoidance(queue_events)
 
 
 def end_simulation():
     print("simulation is completed")
+
 
 main()

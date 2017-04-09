@@ -23,7 +23,7 @@ class Packet:
 
         self.__size = size
         self.__time = 0
-
+        self.__ack = False
         self.__from_station = from_station
         self.__to_station = to_station
 
@@ -32,6 +32,14 @@ class Packet:
         self.state = 'missing'
 
         self.choose_backoff()
+
+    @property
+    def ack(self):
+        return self.__ack
+
+    @ack.setter
+    def ack(self, ack):
+        self.__ack = ack
 
     @property
     def size(self):
