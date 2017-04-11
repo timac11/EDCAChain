@@ -1,5 +1,5 @@
-import ConfigurationParser as parser
-from network import Network as network
+import ConfigurationParser.ConfigurationParser as parser
+from NetworkComponents.network import Network as network
 
 
 def main():

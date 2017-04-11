@@ -4,9 +4,9 @@
  parsing
 """
 import xml.etree.ElementTree as etree
-from packet import Packet as packet
-from station import Station as station
-from event import Event as event
+from NetworkComponents.packet import Packet as packet
+from NetworkComponents.station import Station as station
+from NetworkComponents.event import Event as event
 
 def xml_parsing():
     tree = etree.parse('../config/NetworkConfiguration')
